@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8">
+    <link rel="icon" href="/public/logo.png">
+    <link rel="stylesheet" href="/public/style.css">
+    <title> Up to Speed on SpaceFox | Furball</title>
+     <link href="/+/feed.rss" rel="alternate" title="Furball" type="application/rss+xml"><link rel="manifest" href="/manifest.json">
+    <meta property="og:site_name" content="Furball" />
+    <meta property="og:title" content="Up to Speed on SpaceFox" />
+    <meta property="og:description" content="So this is everything I ve done up to this point on SpaceFox, currently there isn t much Game, as I m currently still working on the Fundamentals of everything so here s how that s going : Build Sys" />
+    <meta property="og:image" content="https://https://eeveelution.github.io/public/eba375873b96a1362684a2998ff06ea5de272468afae5c6f32b7d08558a0cee9.png" />
+    <meta property="og:url" content="https://https:%2F%2Feeveelution.github.io/Up%20to%20Speed%20on%20SpaceFox" />
+    <meta property="og:type" content="website" />
+
+    <meta name="twitter:title" content="Up to Speed on SpaceFox" />
+    <meta name="twitter:description" content="So this is everything I ve done up to this point on SpaceFox, currently there isn t much Game, as I m currently still working on the Fundamentals of everything so here s how that s going : Build Sys" />
+    <meta name="twitter:image" content="https://https://eeveelution.github.io/public/eba375873b96a1362684a2998ff06ea5de272468afae5c6f32b7d08558a0cee9.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:creator" content="@Furball37" />
+    <meta name="twitter:site" content="@Furball37" />
+    <meta name="twitter:image:alt" content="Up to Speed on SpaceFox" />
+ 
+  </head>
+  <body>
+
+    
+
+
+
+
+
+
+
+
+    <div class="container is-max-desktop px-3" dir="auto" style="margin-bottom: 50vh;">
+      <div class="columns pt-5">
+  <div class="column">
+    <a class="icon-text title is-5 pt-2" href="/">
+      <span class="icon"><img alt="logo" src="/public/logo.png"/></span>
+      <span>Furball</span>
+    </a>
+  </div>
+
+  
+  
+  
+</div>
+
+
+<div dir="auto" class="title is-1 has-text-weight-bold"> Up to Speed on SpaceFox</div>
+
+
+      <div class="content">
+        
+
+<div class="columns subtitle is-size-7">
+
+  
+  <div class="column">
+    <span class="icon-text">
+      
+      <span class="icon"> <i class="fa-solid fa-clock"></i> </span>
+      <span>Tuesday 19 September 2023</span>
+      
+    </span>
+  </div>
+  
+
+  
+
+</div>
+
+<div class="view">
+  
+  <p dir="auto"><a href="/+/tag/retrocoding" class="tag is-info is-light">#retrocoding</a> <a href="/+/tag/spacefox" class="tag is-info is-light">#spacefox</a></p>
+<p dir="auto">So this is everything I&rsquo;ve done up to this point on SpaceFox, currently there isn&rsquo;t much Game, as I&rsquo;m currently still working on the Fundamentals of everything so here&rsquo;s how that&rsquo;s going:</p>
+<h1 id="build-system" dir="auto">Build System <a class="show-on-parent-hover is-hidden has-text-grey" href="#build-system">¶</a></h1>
+<p dir="auto">I pretty much hate every single build system on the Planet right now (I am also stubborn) and I couldn&rsquo;t figure out a neat way to do what I want while working with Visual C++ 6&rsquo;es compiler, so I just made my own Python script to do it.</p>
+<p dir="auto">Currently it only works with Visual C++ 6&rsquo;es and probably a bit newer compilers, but it lets me specify different configurations aswell as extend existing Configurations.</p>
+<p dir="auto">Here&rsquo;s the Base Configuration of which all further Configurations are made:</p>
+<p dir="auto"><img src="/public/eba375873b96a1362684a2998ff06ea5de272468afae5c6f32b7d08558a0cee9.png" alt=""></p>
+<p dir="auto">These are pretty much the default build settings of any Visual C++ 6 project. Then it further splits to a Debug and Release Configuration:</p>
+<p dir="auto"><img src="/public/326d5052df31cdc186027057f95774e645de4a002eb33428c1336302d3b30806.png" alt=""></p>
+<p dir="auto">Then there are more configurations for each of the different Rendering backends. Each rendering backend (OpenGL, Glide, S3 MeTal) has a seperate executable. I feel this is the best way to go about this as some of the Backends may have conflicting functions since all are C APIs. Graphics Backends are also not something that you can change during runtime, and choosing the right one is up to the user for now (Maybe a Launcher that autodetects GPUs could be a thing). The configurations extend the Debug and Release Configurations and add their own Preprocessor Macro to enable a backend. They also add their required .lib files to correctly link.</p>
+<p dir="auto"><img src="/public/a5da4e71d837b54d00f0eccd7d2d42278e44bbc4bc1fa9a6241f7e36c615c7c2.png" alt=""></p>
+<p dir="auto">The rest is pretty simple, the build script ironically only runs on Linux, and generates a .bat file which is run on the target computer. It only runs on linux due to it using the &lsquo;find&rsquo; command and the flags are specific to the Linux find command rather than Windows&rsquo;es. It runs through all *.cpp and *.c files, generates a cl.exe command to build it into a .obj file, and links them all together at the end.</p>
+<h1 id="graphics-framework" dir="auto">Graphics Framework <a class="show-on-parent-hover is-hidden has-text-grey" href="#graphics-framework">¶</a></h1>
+<p dir="auto">To support multiple backends seamlessly, there is a inbetween layer to each Backend. There is a GraphicsBackend Class with virtual methods that are later inherited and implemented by each Backend.</p>
+<p dir="auto"><a href="/public/e1a471c1bf5b51aef19a26ae9b77793a267d74b18a65aa6e22a6abf72deb806c.png"></a></p>
+<p dir="auto">Vertex and <a href="/index">Index</a> Buffers aswell as Textures take a double void pointer, There is no real rule as to what these should be, other than that the Graphics Backend has to recognize these later and be able to work with them. The current OpenGL backend returns a pointer to some memory allocated with <code>malloc</code> and later derefrences that pointer when Setting the Vertex/Index buffer aswell as when drawing. This has the negligable side effect that everything regarding these objects has to be done through the Backend object, instead of being fully object oriented by having you be able to call methods on the returned double void pointers. I made this decision to simplify the API a bit, aswell as to be able to cheat a bit and reuse a bit of the Data setting code.</p>
+<p dir="auto">All of the Backend API is made with the lowest common denominator in mind. So Textures are only allowed to be Square and Power of 2 sized. The available Vertex Layouts are also the only ones that have 100% support in every planned backend. <code>VertexPositionColor, VertexPositionTexture, VertexPositionColorTexture</code> Not every Backend has to use the same Models/Textures though, although more on that Later. Some features may be emulated, like the OpenGL backend currently does not use <code>glDrawArrays</code> or <code>glDrawElements</code> as those didn&rsquo;t exist in OpenGL 1.1, so this is achived simply through a for loop that then distingluishes between the currently in use Vertex Layout and emits calls to <code>glVertex3f</code>, <code>glColor4f</code>, <code>glTexCoord2f</code></p>
+<h1 id="resource-handling" dir="auto">Resource Handling <a class="show-on-parent-hover is-hidden has-text-grey" href="#resource-handling">¶</a></h1>
+<p dir="auto">To make life easier I created a Texture and Model Resource system, which can take in different APIs aswell as Detail levels. Rationale behind taking in API was S3 Compressed Textures. The S3 MeTal API can support S3 Compressed Textures, which don&rsquo;t have a big performance hit and look awesome on S3 Savage Cards. A notable example of these is Unreal Tournament, see <a href="https://youtu.be/DfjZkL5m4P4?t=675">LGR&rsquo;s video on this here.</a>. I chose to support this cuz they look heckin&rsquo; awesome, and so this is why API is also accounted for here.</p>
+<p dir="auto"><img src="/public/9db712e34999b87eaf429e76d468370a42f8aef487328a236bbf233ab961e37a.png" alt=""></p>
+<p dir="auto">Each Detail Level has a texture, and can have a special texture for each backend. Then each texture just has a path to the file which contains the Texture data, which can have a variety of formats. Of course the special textures per Backend are optional, and if not specified it will just default to whatever the base texture is.</p>
+<p dir="auto">I plan to do the same thing for models but currently I don&rsquo;t have Models implemented, although it likely will b e a quick copy paste job.</p>
+<h1 id="what-im-working-on-now-scenes" dir="auto">What I&rsquo;m working on now, Scenes <a class="show-on-parent-hover is-hidden has-text-grey" href="#what-im-working-on-now-scenes">¶</a></h1>
+<p dir="auto">Currently I&rsquo;m working on Scene handling, which will make it easier to Transition to and from Scenes, like the Main Menu to Ingame or Settings, or whatever else comes later.</p>
+<p dir="auto"><img src="/public/ab6abe049387ccf0bbb08f811ffd0fd657a34121200ebfd52234048e8f0a567a.png" alt=""></p>
+<p dir="auto">Later there will be a static class called SceneManager which will let me easily change Scenes to different ones. but that&rsquo;s the current thing I&rsquo;ve been working on.</p>
+<p dir="auto">The current &lsquo;main menu&rsquo; or well, rather my Test screen for testing the graphics backend things looks like this:</p>
+<p dir="auto">Loading Content:</p>
+<p dir="auto"><img src="/public/5b4dddd4b35ed9e1232fe4ff49099bedf0272be53386fbd752f5eee4e962256b.png" alt=""></p>
+<p dir="auto">Drawing:</p>
+<p dir="auto"><img src="/public/3e4f1f0a9f24eac673358fc69bd47c9f68947f01c585c9903e38bb7954bd789d.png" alt=""></p>
+<p dir="auto">And here&rsquo;s what it looks like on my current Dual Socket 7 PC:</p>
+<p dir="auto"><img src="/public/4f1e86981454876e4b6f1f21b96b4d8686020c2329d0faead1f7033d2697abb1.jpg" alt=""></p>
+<p dir="auto">And well, that&rsquo;s about all there is to see at the moment. I&rsquo;ll be keeping this updated as the game gets developed more and more but yeah. That&rsquo;s it for now.</p>
+
+  
+<h1> Backlinks </h1>
+<ul>
+  
+  <li>
+    <a href="/index" dir="auto"> index</a> <time class="has-text-grey is-size-7">Tuesday 19 September 2023</time>
+  </li>
+  
+</ul>
+
+
+
+
+</div>
+
+
+
+
+      </div>
+
+
+      
+      <footer class="mt-6 p-3 py-5">
+        <hr/>
+
+        <nav class="breadcrumb has-bullet-separator">
+          <ul>
+            
+
+            <li>
+              <a href="/&#43;/tags" class="icon-text has-text-grey-dark">
+                <span class="icon">
+                  
+                   <i class="fa-solid fa-tags"></i> 
+                </span>
+                <span>Hashtags</span>
+              </a>
+            </li>
+
+            
+
+            <li>
+              <a href="/&#43;/recent" class="icon-text has-text-grey-dark">
+                <span class="icon">
+                  
+                   <i class="fa-solid fa-clock-rotate-left"></i> 
+                </span>
+                <span>Recent</span>
+              </a>
+            </li>
+
+            
+
+            <li>
+              <a href="/&#43;/feed.rss" class="icon-text has-text-grey-dark">
+                <span class="icon">
+                  
+                   <i class="fa-solid fa-rss"></i> 
+                </span>
+                <span>RSS</span>
+              </a>
+            </li>
+
+            
+          </ul>
+        </nav>
+
+      </footer>
+      
+
+    </div>
+  </body>
+</html>
+
